@@ -32,13 +32,13 @@ namespace gama_aec.Controllers
                 {
                     var expira = DateTimeOffset.UtcNow.AddHours(3);
                     if(!string.IsNullOrEmpty(lembrar)) expira = DateTimeOffset.UtcNow.AddYears(1);
-                    this.HttpContext.Response.Cookies.Append("adm_desafio_21dias_csharp_api", adm.Id.ToString(), new CookieOptions
+                    this.HttpContext.Response.Cookies.Append("Cadastro de curriculo", adm.Id.ToString(), new CookieOptions
                     {
                         Expires = expira,
                         HttpOnly = true,
                     });
 
-                    this.HttpContext.Response.Cookies.Append("adm_desafio_21dias_csharp_api_nome", adm.Nome.ToString(), new CookieOptions
+                    this.HttpContext.Response.Cookies.Append("Cadastro de curriculo_nome", adm.Nome.ToString(), new CookieOptions
                     {
                         Expires = expira,
                         HttpOnly = true,
@@ -57,13 +57,13 @@ namespace gama_aec.Controllers
 
         public IActionResult Sair()
         {
-            this.HttpContext.Response.Cookies.Append("adm_desafio_21dias_csharp_api", "", new CookieOptions
+            this.HttpContext.Response.Cookies.Append("Cadastro de curriculo", "", new CookieOptions
             {
                 Expires = DateTimeOffset.UtcNow.AddMinutes(-1),
                 HttpOnly = true,
             });
 
-            this.HttpContext.Response.Cookies.Append("adm_desafio_21dias_csharp_api_nome", "", new CookieOptions
+            this.HttpContext.Response.Cookies.Append("Cadastro de curriculo_nome", "", new CookieOptions
             {
                 Expires = DateTimeOffset.UtcNow.AddMinutes(-1),
                 HttpOnly = true,

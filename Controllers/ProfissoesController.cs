@@ -8,146 +8,94 @@ using Microsoft.EntityFrameworkCore;
 using aec_gama_api.Models;
 using gama_aec.Servico;
 
+
 namespace gama_aec.Controllers
 {
-    public class ProfissoesController : Controller
+    [Logado]
+    public class PaisController : Controller
     {
-        private readonly DbContexto _context;
-
-        public ProfissoesController(DbContexto context)
+        public async Task<IActionResult> Index(int pagina = 1)
         {
-            _context = context;
+            return View(await ProfissaoServico.Todos(pagina));
         }
 
-        // GET: Profissoes
-        public async Task<IActionResult> Index()
+        // GET: Alunos/Details/5
+        public async Task<IActionResult> Details(int id)
         {
-            return View(await _context.Profissoes.ToListAsync());
-        }
-
-        // GET: Profissoes/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
+            var pai = await ProfissaoServico.BuscaPorId(id);
+            if (pai == null)
             {
                 return NotFound();
             }
 
-            var profissao = await _context.Profissoes
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (profissao == null)
-            {
-                return NotFound();
-            }
-
-            return View(profissao);
+            return View(pai);
         }
 
-        // GET: Profissoes/Create
+        // GET: Alunos/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Profissoes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Descricao")] Profissao profissao)
+        public async Task<IActionResult> Create(Pai pai)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(profissao);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var p = await ProfissaoServico.Salvar(pai);
+                return Redirect($"/Pais/Details/{p.Id}");
             }
-            return View(profissao);
+            return View(pai);
         }
 
-        // GET: Profissoes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: Alunos/Edit/5
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
+            var pai = await ProfissaoServico.BuscaPorId(id);
+            if (pai == null)
             {
                 return NotFound();
             }
-
-            var profissao = await _context.Profissoes.FindAsync(id);
-            if (profissao == null)
-            {
-                return NotFound();
-            }
-            return View(profissao);
+            return View(pai);
         }
 
-        // POST: Profissoes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Descricao")] Profissao profissao)
+        public async Task<IActionResult> Edit(string id, Pai pai)
         {
-            if (id != profissao.Id)
+            if (id != pai.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(profissao);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProfissaoExists(profissao.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await ProfissaoServico.Salvar(pai);
                 return RedirectToAction(nameof(Index));
             }
-            return View(profissao);
+            return View(pai);
         }
 
-        // GET: Profissoes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Alunos/Delete/5
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
+            var pai = await ProfissaoServico.BuscaPorId(id);
+            if (pai == null)
             {
                 return NotFound();
             }
 
-            var profissao = await _context.Profissoes
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (profissao == null)
-            {
-                return NotFound();
-            }
-
-            return View(profissao);
+            return View(pai);
         }
 
-        // POST: Profissoes/Delete/5
+        // POST: Alunos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var profissao = await _context.Profissoes.FindAsync(id);
-            _context.Profissoes.Remove(profissao);
-            await _context.SaveChangesAsync();
+            await ProfissaoServico.ExcluirPorId(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProfissaoExists(int id)
-        {
-            return _context.Profissoes.Any(e => e.Id == id);
         }
     }
 }
