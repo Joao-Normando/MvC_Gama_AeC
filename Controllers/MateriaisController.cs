@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using gama_aec.Helpers;
 using gama_aec.Models;
+using gama_aec.Servico.ServicoRefatorado.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace gama_aec.Controllers
