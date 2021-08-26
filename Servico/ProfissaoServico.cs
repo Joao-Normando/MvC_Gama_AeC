@@ -12,7 +12,7 @@ namespace gama_aec.Servico
         {
             using (var http = new HttpClient())
             {
-                using (var response = await http.GetAsync($"{Program.ProfissaosAPI}/pais?page={pagina}"))
+                using (var response = await http.GetAsync($"{Program.ProfissoesAPI}/pais?page={pagina}"))
                 {
                     if(!response.IsSuccessStatusCode) return new List<Profissao>();
 

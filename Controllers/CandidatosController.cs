@@ -7,95 +7,68 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gama_aec.Models;
 using gama_aec.Servico;
-
+using gama_aec.Servicos;
+using Microsoft.AspNetCore.Http;
 
 namespace gama_aec.Controllers
 {
-    [Logado]
-    public class CandidatosController : Controller
+    public class LoginController : Controller
     {
-        public async Task<IActionResult> Index(int pagina = 1)
-        {
-            return View(await CandidatoServico.TodosPaginado(pagina));
-        }
-
-        // GET: Candidatos/Details/5
-        public async Task<IActionResult> Details(int id)
-        {
-            var candidato = await CandidatoServico.BuscaPorId(id);
-            if (candidato == null)
-            {
-                return NotFound();
-            }
-
-            return View(candidato);
-        }
-
-        // GET: Candidatos/Create
-        public IActionResult Create()
+        public IActionResult Index()
         {
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Candidato candidato)
+        public async Task<IActionResult> Logar(string email, string senha, string lembrar)
         {
-            if (ModelState.IsValid)
+            if(string.IsNullOrEmpty(email) || string.IsNullOrEmpty(senha))
             {
-                var alun = await CandidatoServico.Salvar(candidato);
-                return Redirect($"/Candidatos/Details/{alun.Id}");
+                ViewBag.erro = "Digite o e-mail e a senha";
             }
-            return View(candidato);
+            else
+            {
+                var adm = await AdministradorServico.Logar(email, senha);
+                if(adm != null)
+                {
+                    var expira = DateTimeOffset.UtcNow.AddHours(3);
+                    if(!string.IsNullOrEmpty(lembrar)) expira = DateTimeOffset.UtcNow.AddYears(1);
+                    this.HttpContext.Response.Cookies.Append("adm_desafio_21dias_csharp_api", adm.Id.ToString(), new CookieOptions
+                    {
+                        Expires = expira,
+                        HttpOnly = true,
+                    });
+
+                    this.HttpContext.Response.Cookies.Append("adm_desafio_21dias_csharp_api_nome", adm.Nome.ToString(), new CookieOptions
+                    {
+                        Expires = expira,
+                        HttpOnly = true,
+                    });
+
+                    Response.Redirect("/");
+                }
+                else
+                {
+                    ViewBag.erro = "Usuário ou senha inválidos";
+                }
+
+            }
+            return View("Index");
         }
 
-        // GET: Candidatos/Edit/5
-        public async Task<IActionResult> Edit(int id)
+        public IActionResult Sair()
         {
-            var candidato = await CandidatoServico.BuscaPorId(id);
-            if (candidato == null)
+            this.HttpContext.Response.Cookies.Append("adm_desafio_21dias_csharp_api", "", new CookieOptions
             {
-                return NotFound();
-            }
-            return View(candidato);
-        }
+                Expires = DateTimeOffset.UtcNow.AddMinutes(-1),
+                HttpOnly = true,
+            });
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Candidato candidato)
-        {
-            if (id != candidato.Id)
+            this.HttpContext.Response.Cookies.Append("adm_desafio_21dias_csharp_api_nome", "", new CookieOptions
             {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                await CandidatoServico.Salvar(candidato);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(candidato);
-        }
-
-        // GET: Candidatos/Delete/5
-        public async Task<IActionResult> Delete(int id)
-        {
-            var candidato = await CandidatoServico.BuscaPorId(id);
-            if (candidato == null)
-            {
-                return NotFound();
-            }
-
-            return View(candidato);
-        }
-
-        // POST: Candidatos/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            await CandidatoServico.ExcluirPorId(id);
-            return RedirectToAction(nameof(Index));
+                Expires = DateTimeOffset.UtcNow.AddMinutes(-1),
+                HttpOnly = true,
+            });
+            return Redirect("/");
         }
     }
 }
