@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace gama_aec.Servico
 {
-    public class CandidatoAPI
+    public class CandidatoServico
     {
         public static async Task<List<Candidato>> Todos(int pagina = 1)
         {

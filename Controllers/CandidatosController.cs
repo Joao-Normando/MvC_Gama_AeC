@@ -8,35 +8,21 @@ using Microsoft.EntityFrameworkCore;
 using gama_aec.Models;
 using gama_aec.Servico;
 
+
 namespace gama_aec.Controllers
 {
+    [Logado]
     public class CandidatosController : Controller
     {
-        private readonly DbContexto _context;
-
-        public CandidatosController(DbContexto context)
+        public async Task<IActionResult> Index(int pagina = 1)
         {
-            _context = context;
-        }
-
-        // GET: Candidatos
-        public async Task<IActionResult> Index()
-        {
-            var dbContexto = _context.Candidatos.Include(c => c.Profissoes);
-            return View(await dbContexto.ToListAsync());
+            return View(await CandidatoServico.TodosPaginado(pagina));
         }
 
         // GET: Candidatos/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var candidato = await _context.Candidatos
-                .Include(c => c.Profissoes)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var candidato = await CandidatoServico.BuscaPorId(id);
             if (candidato == null)
             {
                 return NotFound();
@@ -48,50 +34,35 @@ namespace gama_aec.Controllers
         // GET: Candidatos/Create
         public IActionResult Create()
         {
-            ViewData["ProfissaoId"] = new SelectList(_context.Profissoes, "Id", "Descricao");
             return View();
         }
 
-        // POST: Candidatos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Cpf,Genero,Nascimento,Telefone,Email,Profissao,EstadoCivil,Cep,Logradouro,Numero,Bairro,Cidade,Estado,ProfissaoId")] Candidato candidato)
+        public async Task<IActionResult> Create(Candidato candidato)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(candidato);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var alun = await CandidatoServico.Salvar(candidato);
+                return Redirect($"/Candidatos/Details/{alun.Id}");
             }
-            ViewData["ProfissaoId"] = new SelectList(_context.Profissoes, "Id", "Descricao", candidato.ProfissaoId);
             return View(candidato);
         }
 
         // GET: Candidatos/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var candidato = await _context.Candidatos.FindAsync(id);
+            var candidato = await CandidatoServico.BuscaPorId(id);
             if (candidato == null)
             {
                 return NotFound();
             }
-            ViewData["ProfissaoId"] = new SelectList(_context.Profissoes, "Id", "Descricao", candidato.ProfissaoId);
             return View(candidato);
         }
 
-        // POST: Candidatos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Cpf,Genero,Nascimento,Telefone,Email,Profissao,EstadoCivil,Cep,Logradouro,Numero,Bairro,Cidade,Estado,ProfissaoId")] Candidato candidato)
+        public async Task<IActionResult> Edit(int id, Candidato candidato)
         {
             if (id != candidato.Id)
             {
@@ -100,39 +71,16 @@ namespace gama_aec.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(candidato);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CandidatoExists(candidato.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await CandidatoServico.Salvar(candidato);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProfissaoId"] = new SelectList(_context.Profissoes, "Id", "Descricao", candidato.ProfissaoId);
             return View(candidato);
         }
 
         // GET: Candidatos/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var candidato = await _context.Candidatos
-                .Include(c => c.Profissoes)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var candidato = await CandidatoServico.BuscaPorId(id);
             if (candidato == null)
             {
                 return NotFound();
@@ -146,15 +94,8 @@ namespace gama_aec.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var candidato = await _context.Candidatos.FindAsync(id);
-            _context.Candidatos.Remove(candidato);
-            await _context.SaveChangesAsync();
+            await CandidatoServico.ExcluirPorId(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CandidatoExists(int id)
-        {
-            return _context.Candidatos.Any(e => e.Id == id);
         }
     }
 }
