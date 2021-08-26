@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using gama_aec.Models;
 
 namespace gama_aec.Servico.ServicoRefatorado
 {
