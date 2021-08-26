@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using aec_gama_api.Models;
 using Newtonsoft.Json;
@@ -12,7 +14,7 @@ namespace gama_aec.Servico
         {
             using (var http = new HttpClient())
             {
-                using (var response = await http.GetAsync($"{Program.ProfissoesAPI}/pais?page={pagina}"))
+                using (var response = await http.GetAsync($"{Program.ProfissoesAPI}/profissao?page={pagina}"))
                 {
                     if(!response.IsSuccessStatusCode) return new List<Profissao>();
 
@@ -26,7 +28,7 @@ namespace gama_aec.Servico
         {
             using (var http = new HttpClient())
             {
-                using (var response = await http.GetAsync($"{Program.ProfissaosAPI}/pais/{id}"))
+                using (var response = await http.GetAsync($"{Program.ProfissoesAPI}/profissao/{id}"))
                 {
                     if(!response.IsSuccessStatusCode) return null;
                     return JsonConvert.DeserializeObject<Profissao>(await response.Content.ReadAsStringAsync());
@@ -34,13 +36,13 @@ namespace gama_aec.Servico
             }
         }
 
-        public static async Task<Profissao> Salvar(Profissao pai)
+        public static async Task<Profissao> Salvar(Profissao profissao)
         {
             using (var http = new HttpClient())
             {
-                if(Convert.ToInt32(pai.Id) == 0)
+                if(Convert.ToInt32(profissao.Id) == 0)
                 {
-                    using (var response = await http.PostAsJsonAsync($"{Program.ProfissaosAPI}/pais", pai))
+                    using (var response = await http.PostAsJsonAsync($"{Program.ProfissoesAPI}/profissao", profissao))
                     {
                         string retorno = await response.Content.ReadAsStringAsync();
                         if(!response.IsSuccessStatusCode)
@@ -55,7 +57,7 @@ namespace gama_aec.Servico
                 }
                 else
                 {
-                    using (var response = await http.PutAsJsonAsync($"{Program.ProfissaosAPI}/pais/{pai.Id}", pai))
+                    using (var response = await http.PutAsJsonAsync($"{Program.ProfissoesAPI}/profissao/{profissao.Id}", profissao))
                     {
                         if(!response.IsSuccessStatusCode) throw new Exception("Erro ao atualizar na API");
                         return JsonConvert.DeserializeObject<Profissao>(await response.Content.ReadAsStringAsync());
@@ -68,7 +70,7 @@ namespace gama_aec.Servico
         {
             using (var http = new HttpClient())
             {
-                using (var response = await http.DeleteAsync($"{Program.ProfissaosAPI}/pais/{id}"))
+                using (var response = await http.DeleteAsync($"{Program.ProfissoesAPI}/profissao/{id}"))
                 {
                     if(!response.IsSuccessStatusCode) throw new Exception("Erro ao excluir da API");
                 }
