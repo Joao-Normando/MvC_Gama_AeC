@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using gama_aec.Servico;
+using gama_aec.Servico.ServicoRefatorado.Interfaces;
+using gama_aec.Servico.ServicoRefatorado.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;

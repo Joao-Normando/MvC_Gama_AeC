@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using aec_gama_api.Models;
 using gama_aec.Servico;
-
+using gama_aec.Helpers;
 
 namespace gama_aec.Controllers
 {
