@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using gama_aec.Models;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 

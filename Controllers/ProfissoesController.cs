@@ -19,7 +19,7 @@ namespace gama_aec.Controllers
             return View(await ProfissaoServico.Todos(pagina));
         }
 
-        // GET: Alunos/Details/5
+        // GET: Candidatos/Details/5
         public async Task<IActionResult> Details(int id)
         {
             var Profissao = await ProfissaoServico.BuscaPorId(id);
@@ -31,7 +31,7 @@ namespace gama_aec.Controllers
             return View(Profissao);
         }
 
-        // GET: Alunos/Create
+        // GET: Candidatos/Create
         public IActionResult Create()
         {
             return View();
@@ -49,7 +49,7 @@ namespace gama_aec.Controllers
             return View(Profissao);
         }
 
-        // GET: Alunos/Edit/5
+        // GET: Candidatos/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             var Profissao = await ProfissaoServico.BuscaPorId(id);
@@ -77,7 +77,7 @@ namespace gama_aec.Controllers
             return View(Profissao);
         }
 
-        // GET: Alunos/Delete/5
+        // GET: Candidatos/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             var Profissao = await ProfissaoServico.BuscaPorId(id);
@@ -89,7 +89,7 @@ namespace gama_aec.Controllers
             return View(Profissao);
         }
 
-        // POST: Alunos/Delete/5
+        // POST: Candidatos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

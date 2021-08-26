@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using gama_aec.Helpers;
 using gama_aec.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ namespace gama_aec.Controllers
             return View(await _servico.TodosPaginado(pagina));
         }
 
-        // GET: Alunos/Details/5
+        // GET: Candidatos/Details/5
         public async Task<IActionResult> Details(int id)
         {
             var material = await _servico.BuscaPorId(id);
@@ -29,7 +30,7 @@ namespace gama_aec.Controllers
             return View(material);
         }
 
-        // GET: Alunos/Create
+        // GET: Candidatos/Create
         public IActionResult Create()
         {
             return View();
@@ -47,7 +48,7 @@ namespace gama_aec.Controllers
             return View(material);
         }
 
-        // GET: Alunos/Edit/5
+        // GET: Candidatos/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             var material = await _servico.BuscaPorId(id);
@@ -75,7 +76,7 @@ namespace gama_aec.Controllers
             return View(material);
         }
 
-        // GET: Alunos/Delete/5
+        // GET: Candidatos/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             var material = await _servico.BuscaPorId(id);
@@ -87,7 +88,7 @@ namespace gama_aec.Controllers
             return View(material);
         }
 
-        // POST: Alunos/Delete/5
+        // POST: Candidatos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
