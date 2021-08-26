@@ -16,7 +16,10 @@ namespace gama_aec
 {
     public class Program
     {
-        public static string ApiHost;
+        public static string AdministradoresAPI = null;
+        public static string AlunosAPI = null;
+        public static string MateriaisAPI = null;
+        public static string PaisAPI = null;
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();

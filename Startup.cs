@@ -25,8 +25,13 @@ namespace gama_aec
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<DbContexto>(options => options.UseSqlServer(connectionString));
+            Program.AdministradoresAPI = Configuration.GetConnectionString("AdministradoresAPI");
+            Program.CandidatosAPI = Configuration.GetConnectionString("CandidatosApi");
+            Program.MateriaisAPI = Configuration.GetConnectionString("MateriaisAPI");
+            Program.ProfissoesAPI = Configuration.GetConnectionString("ProfissoesAPI");
+
+            services.AddScoped<IMaterialHttpClientService, MaterialHttpClientService>();
+            
             services.AddControllersWithViews();
         }
 
