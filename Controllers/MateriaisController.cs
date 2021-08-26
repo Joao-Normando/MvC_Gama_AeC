@@ -1,34 +1,32 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using gama_aec.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using aec_gama_api.Models;
-using gama_aec.Servico;
-
 
 namespace gama_aec.Controllers
 {
     [Logado]
-    public class ProfissoesController : Controller
+    public class MateriaisController : Controller
     {
+        private readonly IMaterialHttpClientService _servico;
+        public MateriaisController(IMaterialHttpClientService service)
+        {
+            _servico = service;
+        }
         public async Task<IActionResult> Index(int pagina = 1)
         {
-            return View(await ProfissaoServico.Todos(pagina));
+            return View(await _servico.TodosPaginado(pagina));
         }
 
         // GET: Alunos/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            var Profissao = await ProfissaoServico.BuscaPorId(id);
-            if (Profissao == null)
+            var material = await _servico.BuscaPorId(id);
+            if (material == null)
             {
                 return NotFound();
             }
 
-            return View(Profissao);
+            return View(material);
         }
 
         // GET: Alunos/Create
@@ -39,54 +37,54 @@ namespace gama_aec.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Profissao Profissao)
+        public async Task<IActionResult> Create(Material material)
         {
             if (ModelState.IsValid)
             {
-                var p = await ProfissaoServico.Salvar(Profissao);
-                return Redirect($"/Profissoes/Details/{p.Id}");
+                var mat = await _servico.Salvar(material);
+                return Redirect($"/Materiais/Details/{mat.Id}");
             }
-            return View(Profissao);
+            return View(material);
         }
 
         // GET: Alunos/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var Profissao = await ProfissaoServico.BuscaPorId(id);
-            if (Profissao == null)
+            var material = await _servico.BuscaPorId(id);
+            if (material == null)
             {
                 return NotFound();
             }
-            return View(Profissao);
+            return View(material);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, Profissao Profissao)
+        public async Task<IActionResult> Edit(int id, Material material)
         {
-            if (id != Profissao.Id)
+            if (id != material.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                await ProfissaoServico.Salvar(Profissao);
+                await _servico.Salvar(material);
                 return RedirectToAction(nameof(Index));
             }
-            return View(Profissao);
+            return View(material);
         }
 
         // GET: Alunos/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var Profissao = await ProfissaoServico.BuscaPorId(id);
-            if (Profissao == null)
+            var material = await _servico.BuscaPorId(id);
+            if (material == null)
             {
                 return NotFound();
             }
 
-            return View(Profissao);
+            return View(material);
         }
 
         // POST: Alunos/Delete/5
@@ -94,7 +92,7 @@ namespace gama_aec.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await ProfissaoServico.ExcluirPorId(id);
+            await _servico.ExcluirPorId(id);
             return RedirectToAction(nameof(Index));
         }
     }
