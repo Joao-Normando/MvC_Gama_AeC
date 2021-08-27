@@ -3,18 +3,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using gama_aec.Models;
 
-namespace aec_gama_api.Models
-{
-    [Table("profissoes")]
-    public class Profissao
+namespace gama_aec.Models
+{    public class Profissao
     {
-        [Key]
-        [Column("id")]
         public int Id {get; set;}
-
-        [Column("descricao", TypeName ="varchar")]
-        [MaxLength(45)]
-        [Required]
 
         public string Descricao{get; set;}
 

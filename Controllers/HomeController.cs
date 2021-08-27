@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using gama_aec.Models;
+using gama_aec.Servico;
 
 namespace gama_aec.Controllers
 {
@@ -18,8 +19,11 @@ namespace gama_aec.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
-        {
+        public async Task<IActionResult> Index()
+        { 
+            ViewBag.Profissoes = await APIService.GetProfissoes();
+            ViewBag.Candidatos = await APIService.GetCandidatos();
+            
             return View();
         }
 

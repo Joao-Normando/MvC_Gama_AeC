@@ -5,97 +5,39 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using aec_gama_api.Models;
+using gama_aec.Models;
+using Microsoft.Extensions.Logging;
 using gama_aec.Servico;
-using gama_aec.Helpers;
+using System.Diagnostics;
 
 namespace gama_aec.Controllers
 {
-    [Logado]
     public class ProfissoesController : Controller
     {
-        public async Task<IActionResult> Index(int pagina = 1)
+        private readonly ILogger<ProfissoesController> _logger;
+
+        public ProfissoesController(ILogger<ProfissoesController> logger)
         {
-            return View(await ProfissaoServico.Todos(pagina));
+            _logger = logger;
         }
 
-        // GET: Candidatos/Details/5
-        public async Task<IActionResult> Details(int id)
-        {
-            var Profissao = await ProfissaoServico.BuscaPorId(id);
-            if (Profissao == null)
-            {
-                return NotFound();
-            }
-
-            return View(Profissao);
+        public async Task<IActionResult> Index()
+        { 
+            ViewBag.Profissoes = await APIService.GetProfissoes();
+            ViewBag.Candidatos = await APIService.GetCandidatos();
+            
+            return View();
         }
 
-        // GET: Candidatos/Create
-        public IActionResult Create()
+        public IActionResult Privacy()
         {
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Profissao Profissao)
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
         {
-            if (ModelState.IsValid)
-            {
-                var p = await ProfissaoServico.Salvar(Profissao);
-                return Redirect($"/Profissoes/Details/{p.Id}");
-            }
-            return View(Profissao);
-        }
-
-        // GET: Candidatos/Edit/5
-        public async Task<IActionResult> Edit(int id)
-        {
-            var Profissao = await ProfissaoServico.BuscaPorId(id);
-            if (Profissao == null)
-            {
-                return NotFound();
-            }
-            return View(Profissao);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, Profissao Profissao)
-        {
-            if (id != Profissao.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                await ProfissaoServico.Salvar(Profissao);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(Profissao);
-        }
-
-        // GET: Candidatos/Delete/5
-        public async Task<IActionResult> Delete(int id)
-        {
-            var Profissao = await ProfissaoServico.BuscaPorId(id);
-            if (Profissao == null)
-            {
-                return NotFound();
-            }
-
-            return View(Profissao);
-        }
-
-        // POST: Candidatos/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            await ProfissaoServico.ExcluirPorId(id);
-            return RedirectToAction(nameof(Index));
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
